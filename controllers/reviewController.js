@@ -3,8 +3,9 @@ const catchAsync = require('../utils/catchAsync');
 // const AppError = require('../utils/appError');
 
 exports.getAllReviews = catchAsync(async (req, res, next) => {
-  const { tourId } = req.params;
-  const reviews = await Review.find({ tour: tourId });
+  let filter = {};
+  if (req.params.tourId) filter = { tour: req.params.tourId };
+  const reviews = await Review.find(filter);
   res.status(200).json({
     status: 'success',
     results: reviews.length,
