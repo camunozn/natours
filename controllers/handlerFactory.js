@@ -1,5 +1,44 @@
+const QueryingFeatures = require('../utils/queringFeatures');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+
+exports.getAll = Model =>
+  catchAsync(async (req, res, next) => {
+    // Especial case for reviews
+    let filter = {};
+    if (req.params.tourId) filter = { tour: req.params.tourId };
+
+    const querying = new QueryingFeatures(Model.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const docs = await querying.query;
+
+    res.status(200).json({
+      status: 'success',
+      results: docs.length,
+      data: {
+        data: docs,
+      },
+    });
+  });
+
+exports.getOne = (Model, populateOpt) =>
+  catchAsync(async (req, res, next) => {
+    let query = Model.findById(req.params.id);
+    if (populateOpt) query = query.populate(populateOpt);
+    const doc = await query;
+    if (!doc) {
+      return next(new AppError('Document not found with that ID', 404));
+    }
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: doc,
+      },
+    });
+  });
 
 exports.createOne = Model =>
   catchAsync(async (req, res, next) => {
