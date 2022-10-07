@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 // const User = require('./userModel');
-// const validator = require('validator');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -12,7 +11,6 @@ const tourSchema = new mongoose.Schema(
       trim: true,
       maxlength: [40, 'A tour name must have less or equal than 40 characters'],
       minlength: [10, 'A tour name must have more or equal than 10 characters'],
-      // validate: [validator.isAlpha, 'Tour name must only contain characters'],
     },
     slug: String,
     duration: {
@@ -115,6 +113,9 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
@@ -139,11 +140,6 @@ tourSchema.pre('save', function (next) {
 //   next();
 // });
 
-// tourSchema.post('save', (doc, next) => {
-//   console.log(doc);
-//   next();
-// });
-
 ////////////////////////////////////////////////////////
 // QUERY MIDDLEWARE
 tourSchema.pre(/^find/, function (next) {
@@ -158,11 +154,6 @@ tourSchema.pre(/^find/, function (next) {
   });
   next();
 });
-
-// tourSchema.post(/^find/, function (docs, next) {
-//   console.log(`Query took ${Date.now() - this.start} milliseconds`);
-//   next();
-// });
 
 ////////////////////////////////////////////////////////
 // AGGREGATION MIDDLEWARE
