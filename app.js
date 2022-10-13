@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -7,6 +8,9 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 
 const app = express();
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 const AppError = require('./utils/appError');
 const errorHandler = require('./controllers/errorController');
@@ -19,6 +23,9 @@ console.log(`Environment: ${process.env.NODE_ENV}`);
 
 /////////////////////////////////////////////
 // GLOBAL MIDDLEWARES
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Set security HTTP headers
 app.use(helmet());
 
@@ -56,15 +63,18 @@ app.use(
   })
 );
 
-// Serving static files
-app.use(express.static(`${__dirname}/public`));
-
 // Test middleware to calculate request time
 // app.use((req, res, next) => {
 //   req.requestTime = new Date().toISOString();
 //   console.log(req.headers)
 //   next();
 // });
+
+/////////////////////////////////////////////
+// SERVER-SIDE RENDER
+app.get('/', (req, res) => {
+  res.status(200).render('base', {});
+});
 
 /////////////////////////////////////////////
 // HANDLED ROUTES
