@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -34,14 +35,19 @@ app.use(
       defaultSrc: [],
       connectSrc: [
         "'self'",
+        "'unsafe-inline'",
+        'data:',
+        'blob:',
         'https://unpkg.com',
         'https://tile.openstreetmap.org',
+        'ws://127.0.0.1:*/',
       ],
       scriptSrc: [
         "'self'",
         'https://unpkg.com/',
         'https://tile.openstreetmap.org',
         'https://unpkg.com/leaflet@1.9.2/dist/leaflet.js',
+        'https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js',
       ],
       styleSrc: [
         "'self'",
@@ -94,6 +100,8 @@ app.use('/api', limiter);
 
 // Set body parser: for reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
+// Cookie parser
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
