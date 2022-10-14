@@ -28,7 +28,58 @@ console.log(`Environment: ${process.env.NODE_ENV}`);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Set security HTTP headers
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: [],
+      connectSrc: [
+        "'self'",
+        'https://unpkg.com',
+        'https://tile.openstreetmap.org',
+      ],
+      scriptSrc: [
+        "'self'",
+        'https://unpkg.com/',
+        'https://tile.openstreetmap.org',
+        'https://unpkg.com/leaflet@1.9.2/dist/leaflet.js',
+      ],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        'https://unpkg.com/',
+        'https://tile.openstreetmap.org',
+        'https://fonts.googleapis.com/',
+        'https://unpkg.com/leaflet@1.9.2/dist/leaflet.css',
+      ],
+      workerSrc: ["'self'", 'blob:'],
+      objectSrc: [],
+      imgSrc: ["'self'", 'blob:', 'data:', 'https:'],
+      fontSrc: ["'self'", 'fonts.googleapis.com', 'fonts.gstatic.com'],
+    },
+  })
+);
+app.use(
+  helmet.crossOriginEmbedderPolicy({
+    policy: 'credentialless',
+  })
+);
+app.use(helmet.crossOriginOpenerPolicy());
+app.use(
+  helmet.crossOriginResourcePolicy({
+    policy: 'cross-origin',
+  })
+);
+app.use(helmet.dnsPrefetchControl());
+app.use(helmet.expectCt());
+app.use(helmet.frameguard());
+app.use(helmet.hidePoweredBy());
+app.use(helmet.hsts());
+app.use(helmet.ieNoOpen());
+app.use(helmet.noSniff());
+app.use(helmet.originAgentCluster());
+app.use(helmet.permittedCrossDomainPolicies());
+app.use(helmet.referrerPolicy());
+app.use(helmet.xssFilter());
 
 // Set development loggin
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));

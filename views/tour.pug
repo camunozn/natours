@@ -2,8 +2,13 @@ extends base
 include _reviewCard
 
 block append head
-  //- script(src='https://api.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js')
-  //- link(href='https://api.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet')
+    link(rel='stylesheet' href='https://unpkg.com/leaflet@1.9.2/dist/leaflet.css'
+     integrity='sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14='
+     crossorigin='')
+    script(src='https://unpkg.com/leaflet@1.9.2/dist/leaflet.js'
+     integrity='sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg='
+     crossorigin='')
+    script(src='/js/leaflet.js' defer)
 
 mixin overviewBox(label, text, icon)
   .overview-box__detail
