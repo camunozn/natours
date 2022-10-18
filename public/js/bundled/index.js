@@ -3736,7 +3736,7 @@ const login = async function(email, password) {
             (0, _alerts.showAlert)("success", "Logged in successfully!");
             window.setTimeout(()=>{
                 location.assign("/");
-            }, 1500);
+            }, 1000);
         }
         console.log(res);
     } catch (err) {
