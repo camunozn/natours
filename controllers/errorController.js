@@ -24,30 +24,55 @@ const handleJWTError = () =>
 const handleJWTExpiredError = () =>
   new AppError('Your token has expired. Please log in again.', 401);
 
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-    error: err,
-    stack: err.stack,
+const sendErrorDev = (err, req, res) => {
+  // A) API
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+      error: err,
+      stack: err.stack,
+    });
+  }
+  // B) RENDERED WEBSITE
+  console.error('Error 💥', err);
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: err.message,
   });
 };
 
-const sendErrorProd = (err, res) => {
-  // OPERATIONAL TRUSTED ERROR: send message to the client.
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
-    // PROGRAMMING UNKNOWN ERROR: don't send error details.
-  } else {
+const sendErrorProd = (err, req, res) => {
+  // A) API
+  if (req.originalUrl.startsWith('/api')) {
+    // A1) OPERATIONAL TRUSTED ERROR: send message to the client.
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
+    // A2) PROGRAMMING UNKNOWN ERROR: don't send error details.
     console.error('Error 💥', err);
-    res.status(500).json({
+    return res.status(500).json({
       status: 'error',
       message: 'Whoops, something went wrong',
     });
   }
+  // B) RENDERED WEBSITE
+  // B1) OPERATIONAL TRUSTED ERROR: send message to the client.
+  if (err.isOperational) {
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      msg: err.message,
+    });
+  }
+  // B2) PROGRAMMING UNKNOWN ERROR: don't send error details.
+  console.error('Error 💥', err);
+  return res.status(500).render('error', {
+    title: 'Something went wrong!',
+    msg: 'Please try again later.',
+  });
 };
 
 module.exports = (err, req, res, next) => {
@@ -82,9 +107,9 @@ module.exports = (err, req, res, next) => {
 
   // SEND ERROR
   if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
-    sendErrorProd(error, res);
+    sendErrorProd(error, req, res);
   }
   next();
 };
