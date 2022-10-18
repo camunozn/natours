@@ -3738,7 +3738,6 @@ const login = async function(email, password) {
                 location.assign("/");
             }, 1000);
         }
-        console.log(res);
     } catch (err) {
         (0, _alerts.showAlert)("error", err.response.data.message);
     }

@@ -17,7 +17,6 @@ export const login = async function (email, password) {
         location.assign('/');
       }, 1000);
     }
-    console.log(res);
   } catch (err) {
     showAlert('error', err.response.data.message);
   }
