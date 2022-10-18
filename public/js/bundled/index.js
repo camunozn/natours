@@ -544,7 +544,6 @@ var _esPromiseFinallyJs = require("core-js/modules/es.promise.finally.js");
 var _esTypedArraySetJs = require("core-js/modules/es.typed-array.set.js");
 var _esTypedArraySortJs = require("core-js/modules/es.typed-array.sort.js");
 var _webQueueMicrotaskJs = require("core-js/modules/web.queue-microtask.js");
-// import 'regenerator-runtime/runtime';
 var _leaflet = require("./leaflet");
 var _login = require("./login");
 var _updateSettings = require("./updateSettings");
@@ -3757,7 +3756,7 @@ const logout = async function() {
     }
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5Birt","./alerts":"j4hQk"}],"j4hQk":[function(require,module,exports) {
+},{"./alerts":"j4hQk","@parcel/transformer-js/src/esmodule-helpers.js":"5Birt"}],"j4hQk":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "hideAlert", ()=>hideAlert);
