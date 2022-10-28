@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: [],
+      defaultSrc: ["'self'", 'https://*.stripe.com'],
       connectSrc: [
         "'self'",
         "'unsafe-inline'",
@@ -41,6 +41,7 @@ app.use(
         'blob:',
         'https://unpkg.com',
         'https://tile.openstreetmap.org',
+        'https://*.stripe.com',
         'ws://127.0.0.1:*/',
       ],
       scriptSrc: [
@@ -49,6 +50,7 @@ app.use(
         'https://tile.openstreetmap.org',
         'https://unpkg.com/leaflet@1.9.2/dist/leaflet.js',
         'https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js',
+        'https://js.stripe.com/v3/',
       ],
       styleSrc: [
         "'self'",

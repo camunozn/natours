@@ -10,11 +10,9 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 
   // 2) Create checkout session
   const session = await stripe.checkout.sessions.create({
-    // payment_method_types: ['card'],
+    payment_method_types: ['card'],
     mode: 'payment',
-    success_url: `${req.protocol}://${req.get('host')}/my-tours/?tour=${
-      req.params.tourId
-    }&user=${req.user.id}&price=${tour.price}`,
+    success_url: `${req.protocol}://${req.get('host')}/`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
@@ -30,6 +28,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
           currency: 'usd',
           product_data: {
             name: `${tour.name} Tour`,
+            images: [`https://www.natours.dev/img/tours/${tour.imageCover}`],
           },
           unit_amount: tour.price * 100,
         },
