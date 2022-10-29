@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const app = express();
 
@@ -126,10 +127,12 @@ app.use(
   })
 );
 
+// Compress text
+app.use(compression());
+
 // Test middleware to calculate request time
 // app.use((req, res, next) => {
 //   req.requestTime = new Date().toISOString();
-//   console.log(req.headers)
 //   next();
 // });
 
